@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algoritmo Diagnostico IgG4-RD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background: white;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .criteria-grid {
+            display: grid;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .criterion {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .criterion label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            margin: 0;
+        }
+        
+        .criterion input[type="checkbox"] {
+            margin-top: 3px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .criterion-text {
+            flex: 1;
+        }
+        
+        .criterion-weight {
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .info-box strong {
+            color: #1976d2;
+        }
+        
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .warning-box strong {
+            color: #f57c00;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .result.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-high {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+        }
+        
+        .result-medium {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+        }
+        
+        .result-low {
+            background: #ffebee;
+            border: 2px solid #f44336;
+        }
+        
+        .result h3 {
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+        
+        .result-high h3 { color: #2e7d32; }
+        .result-medium h3 { color: #f57c00; }
+        .result-low h3 { color: #c62828; }
+        
+        .score-display {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .ihc-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .ihc-section.show {
+            display: block;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .ratio-result {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .ratio-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        
+        .dd-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+        
+        .dd-list li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .dd-list li:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 Algoritmo Diagnostico IgG4-RD</h1>
+            <p>Valutazione istologica per malattia IgG4-correlata</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <div class="section-title">
+                    <span class="step-number">1</span>
+                    <span>Selezione Organo</span>
+                </div>
+                <label for="organ">Seleziona l'organo biopsiato:</label>
+                <select id="organ">
+                    <option value="">-- Seleziona --</option>
+                    <option value="pancreas">Pancreas</option>
+                    <option value="salivary">Ghiandole salivari (parotide, sottomandibolare)</option>
+                    <option value="lymph">Linfonodi</option>
+                    <option value="biliary">Vie biliari / colecisti / fegato</option>
+                    <option value="kidney">Rene</option>
+                    <option value="lung">Polmone</option>
+                    <option value="retroperitoneum">Retroperitoneo / mesentere</option>
+                    <option value="aorta">Aorta / grossi vasi</option>
+                    <option value="orbit">Orbita / ghiandola lacrimale</option>
+                    <option value="skin">Cute</option>
+                    <option value="meninges">Meningi / pachimeningi</option>
+                    <option value="thyroid">Tiroide</option>
+                    <option value="prostate">Prostata</option>
+                    <option value="other">Altro (generico)</option>
+                </select>
+                <div id="organInfo" class="info-box hidden">
+                    <strong>Info organo:</strong>
+                    <p id="organInfoText"></p>
+                </div>
+            </div>
+            
+            <div id="criteriaSection" class="section hidden">
+                <div class="section-title">
+                    <span class="step-number">2</span>
+                    <span>Valutazione Ematossilina-Eosina (EE)</span>
+                </div>
+                
+                <div class="criteria-grid" id="criteriaGrid"></div>
+                
+                <div id="ddWarning" class="warning-box">
+                    <strong>⚠️ Diagnosi differenziali da escludere:</strong>
+                    <ul class="dd-list" id="ddList"></ul>
+                </div>
+                
+                <button class="button" onclick="calculateScore()" style="margin-top: 20px;">
+                    Calcola Score
+                </button>
+            </div>
+            
+            <div id="resultSection" class="result">
+                <h3 id="resultTitle"></h3>
+                <div class="score-display" id="scoreDisplay"></div>
+                <div id="resultText"></div>
+            </div>
+            
+            <div id="ihcSection" class="ihc-section">
+                <div class="section-title">
+                    <span class="step-number">3</span>
+                    <span>Interpretazione Immunoistochimica</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="igg4Count">N° cellule IgG4+ per HPF (media di 3 HPF ad alta densità):</label>
+                    <input type="number" id="igg4Count" min="0" placeholder="es. 85">
+                </div>
+                
+                <div class="input-group">
+                    <label for="iggTotal">N° cellule IgG totali per HPF (se disponibile):</label>
+                    <input type="number" id="iggTotal" min="0" placeholder="es. 200">
+                </div>
+                
+                <button class="button" onclick="interpretIHC()">
+                    Interpreta IHC
+                </button>
+                
+                <div id="ihcResult" class="ratio-result hidden"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const organData = {
+            pancreas: {
+                threshold: 50,
+                ratio: 40,
+                info: "Soglia IgG4+: >50/HPF | Ratio IgG4/IgG: >40% | Fibrosi storiforme e flebite obliterante sono caratteristiche tipiche.",
+                dd: [
+                    "Pancreatite autoimmune tipo 2 (IgG4-, GEL+, età giovane)",
+                    "Adenocarcinoma desmoplastico (EMA+, CK7+, atipia citologica)"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare denso (>50/HPF)", weight: 3},
+                    {text: "Fibrosi storiforme evidente", weight: 3},
+                    {text: "Flebite obliterante presente", weight: 3},
+                    {text: "Eosinofili >10/HPF", weight: 1},
+                    {text: "Aspetto pseudotumorale / massa", weight: 2},
+                    {text: "Assenza di granulomi, necrosi, atipia", weight: 2}
+                ]
+            },
+            salivary: {
+                threshold: 100,
+                ratio: 40,
+                info: "Soglia IgG4+: >100/HPF | Ratio IgG4/IgG: >40% | Atrofia acinare e fibrosi periductale tipiche.",
+                dd: [
+                    "Sindrome di Sjögren (centri germinativi, anti-SSA+)",
+                    "Linfoma MALT (CD20+, clonalità B, LEL - lymphoepithelial lesions)"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare denso (>100/HPF)", weight: 3},
+                    {text: "Fibrosi periductale e atrofia acinare", weight: 3},
+                    {text: "Flebite obliterante presente", weight: 2},
+                    {text: "Eosinofili >10/HPF", weight: 1},
+                    {text: "Assenza di centri germinativi evidenti", weight: 2},
+                    {text: "Assenza di LEL (lymphoepithelial lesions)", weight: 2}
+                ]
+            },
+            lymph: {
+                threshold: 100,
+                ratio: 40,
+                info: "Soglia IgG4+: >100/HPF | Ratio IgG4/IgG: >40% | Pattern 'a mantello' e vascolarizzazione aumentata.",
+                dd: [
+                    "Malattia di Castleman (pattern 'a bulbo di cipolla', HHV8+ se MCD)",
+                    "Linfoma plasmablastico (CD138+, clonalità, MUM1+, Ki67 alto)"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare denso (>100/HPF)", weight: 3},
+                    {text: "Pattern 'a mantello' intorno ai follicoli", weight: 2},
+                    {text: "Vascolarizzazione aumentata", weight: 2},
+                    {text: "Fibrosi interfollicolare", weight: 2},
+                    {text: "Assenza di pattern 'a bulbo di cipolla'", weight: 2},
+                    {text: "Plasmacellule policlonali (lambda/kappa bilanciato)", weight: 3}
+                ]
+            },
+            biliary: {
+                threshold: 50,
+                ratio: 40,
+                info: "Soglia IgG4+: >50/HPF | Ratio IgG4/IgG: >40% | Flebite periportale e sclerosi caratteristiche.",
+                dd: [
+                    "Colangite sclerosante primitiva (fibrosi 'a bulbo di cipolla' periductale)",
+                    "Colangiocarcinoma (atipia epiteliale, invasione)"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare denso (>50/HPF)", weight: 3},
+                    {text: "Fibrosi storiforme o densa periportale", weight: 3},
+                    {text: "Flebite obliterante portale", weight: 3},
+                    {text: "Eosinofili >10/HPF", weight: 1},
+                    {text: "Colangite linfocitica", weight: 2},
+                    {text: "Assenza di atipia epiteliale biliare", weight: 2}
+                ]
+            },
+            kidney: {
+                threshold: 10,
+                ratio: 40,
+                info: "Soglia IgG4+: >10/HPF (!!!) | Ratio IgG4/IgG: >40% | TIN con atrofia tubulare, infiltrato spesso scarso.",
+                dd: [
+                    "TIN da farmaci (eosinofili, tubulite acuta, no fibrosi organizzata)",
+                    "Pielonefrite xantogranulomatosa (macrofagi schiumosi, necrosi)"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare interstiziale (>10/HPF)", weight: 3},
+                    {text: "Fibrosi interstiziale diffusa", weight: 3},
+                    {text: "Atrofia tubulare", weight: 2},
+                    {text: "Eosinofili presenti", weight: 1},
+                    {text: "Assenza di tubulite acuta severa", weight: 2},
+                    {text: "Assenza di necrosi o granulomi", weight: 2}
+                ]
+            },
+            lung: {
+                threshold: 50,
+                ratio: 40,
+                info: "Soglia IgG4+: >50/HPF | Ratio IgG4/IgG: >40% | Infiltrato perivascolare/peribronchiale.",
+                dd: [
+                    "Granulomatosi con poliangioite (granulomi necrotizzanti, c-ANCA+)",
+                    "Polmonite organizzativa (tessuto di granulazione endoluminale)",
+                    "Linfoma MALT polmonare"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare perivascolare (>50/HPF)", weight: 3},
+                    {text: "Fibrosi interstiziale o peribronchiale", weight: 2},
+                    {text: "Flebite obliterante", weight: 2},
+                    {text: "Eosinofili >10/HPF", weight: 1},
+                    {text: "Assenza di granulomi necrotizzanti", weight: 3},
+                    {text: "Assenza di organizing pneumonia pattern", weight: 2}
+                ]
+            },
+            retroperitoneum: {
+                threshold: 50,
+                ratio: 40,
+                info: "Soglia IgG4+: >50/HPF | Ratio IgG4/IgG: >40% | Masse fibrotiche 'a manicotto' attorno a strutture vascolari.",
+                dd: [
+                    "Fibrosi retroperitoneale idiopatica (Malattia di Ormond, meno plasmacellule)",
+                    "Linfoma retroperitoneale",
+                    "Sarcoma retroperitoneale ben differenziato"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare denso (>50/HPF)", weight: 3},
+                    {text: "Fibrosi storiforme estesa", weight: 3},
+                    {text: "Flebite obliterante", weight: 2},
+                    {text: "Massa 'a manicotto' attorno a strutture vascolari", weight: 2},
+                    {text: "Eosinofili presenti", weight: 1},
+                    {text: "Assenza di atipia cellulare o mitosi", weight: 2}
+                ]
+            },
+            aorta: {
+                threshold: 30,
+                ratio: 40,
+                info: "Soglia IgG4+: >30/HPF | Ratio IgG4/IgG: >40% | Infiltrato nell'avventizia, flebite dei vasa vasorum.",
+                dd: [
+                    "Aortite di Takayasu (infiltrato transmural, granulomi)",
+                    "Arterite a cellule giganti (granulomi, cellule giganti, rottura lamina elastica)",
+                    "Aortite aterosclerotica"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare avventiziale (>30/HPF)", weight: 3},
+                    {text: "Fibrosi avventiziale", weight: 2},
+                    {text: "Flebite dei vasa vasorum", weight: 3},
+                    {text: "Eosinofili presenti", weight: 1},
+                    {text: "Assenza di infiltrato transmural", weight: 2},
+                    {text: "Assenza di granulomi o cellule giganti", weight: 3}
+                ]
+            },
+            orbit: {
+                threshold: 50,
+                ratio: 40,
+                info: "Soglia IgG4+: >50/HPF | Ratio IgG4/IgG: >40% | Ghiandola lacrimale con fibrosi sclerosante.",
+                dd: [
+                    "Dacrioadenite cronica aspecifica",
+                    "Sarcoidosi orbitaria",
+                    "Linfoma orbitale (MALT)"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare denso (>50/HPF)", weight: 3},
+                    {text: "Fibrosi sclerosante della ghiandola lacrimale", weight: 3},
+                    {text: "Flebite obliterante", weight: 2},
+                    {text: "Eosinofili presenti", weight: 1},
+                    {text: "Assenza di granulomi", weight: 2},
+                    {text: "Assenza di LEL", weight: 2}
+                ]
+            },
+            skin: {
+                threshold: 50,
+                ratio: 40,
+                info: "Soglia IgG4+: >50/HPF | Ratio IgG4/IgG: >40% | Infiltrato dermico con fibrosi.",
+                dd: [
+                    "Pseudolinfoma cutaneo",
+                    "Linfoma cutaneo B (MALT, marginal zone)",
+                    "Reazioni cutanee da farmaci"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare dermico (>50/HPF)", weight: 3},
+                    {text: "Fibrosi dermica", weight: 2},
+                    {text: "Flebite superficiale/profonda", weight: 2},
+                    {text: "Eosinofili >10/HPF", weight: 1},
+                    {text: "Assenza di epidermotropismo", weight: 2},
+                    {text: "Policlonalità plasmacellule", weight: 3}
+                ]
+            },
+            meninges: {
+                threshold: 10,
+                ratio: 40,
+                info: "Soglia IgG4+: >10/HPF (!!!) | Ratio IgG4/IgG: >40% | Ispessimento pachimeningeo, può essere paucicellulare.",
+                dd: [
+                    "Pachimeningite infettiva (TB, funghi)",
+                    "Pachimeningite da sarcoidosi",
+                    "Meningioma fibroso"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare (>10/HPF, anche focale)", weight: 3},
+                    {text: "Fibrosi densa pachimeningea", weight: 3},
+                    {text: "Flebite presente", weight: 2},
+                    {text: "Ispessimento diffuso delle meningi", weight: 2},
+                    {text: "Assenza di granulomi", weight: 3},
+                    {text: "Assenza di agenti infettivi (colorazioni speciali negative)", weight: 3}
+                ]
+            },
+            thyroid: {
+                threshold: 50,
+                ratio: 40,
+                info: "Soglia IgG4+: >50/HPF | Ratio IgG4/IgG: >40% | Fibrosi con atrofia follicolare.",
+                dd: [
+                    "Tiroidite di Hashimoto (cellule di Hürthle, centri germinativi)",
+                    "Tiroidite di Riedel (fibrosi extratiroidea estesa)"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare denso (>50/HPF)", weight: 3},
+                    {text: "Fibrosi storiforme o densa", weight: 3},
+                    {text: "Flebite obliterante", weight: 2},
+                    {text: "Atrofia follicolare", weight: 2},
+                    {text: "Eosinofili presenti", weight: 1},
+                    {text: "Assenza di estensione extratiroidea marcata", weight: 2}
+                ]
+            },
+            prostate: {
+                threshold: 50,
+                ratio: 40,
+                info: "Soglia IgG4+: >50/HPF | Ratio IgG4/IgG: >40% | Infiltrato stromale con fibrosi.",
+                dd: [
+                    "Prostatite cronica aspecifica",
+                    "Prostatite granulomatosa",
+                    "Adenocarcinoma prostatico con desmoplasia"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare stromale (>50/HPF)", weight: 3},
+                    {text: "Fibrosi stromale", weight: 2},
+                    {text: "Flebite presente", weight: 2},
+                    {text: "Eosinofili presenti", weight: 1},
+                    {text: "Assenza di granulomi", weight: 2},
+                    {text: "Assenza di atipia ghiandolare", weight: 3}
+                ]
+            },
+            other: {
+                threshold: 50,
+                ratio: 40,
+                info: "Soglia IgG4+: >50/HPF (generico) | Ratio IgG4/IgG: >40% | Valuta criteri morfologici classici.",
+                dd: [
+                    "Processi infiammatori cronici aspecifici",
+                    "Neoplasie con infiltrato infiammatorio ricco"
+                ],
+                criteria: [
+                    {text: "Infiltrato plasmacellulare denso (>30/HPF)", weight: 3},
+                    {text: "Fibrosi storiforme o organizzata", weight: 3},
+                    {text: "Flebite obliterante presente", weight: 3},
+                    {text: "Eosinofili >10/HPF", weight: 1},
+                    {text: "Aspetto pseudotumorale", weight: 2},
+                    {text: "Assenza di granulomi, necrosi, atipia franca", weight: 2}
+                ]
+            }
+        };
+        
+        let selectedOrgan = null;
+        
+        document.getElementById('organ').addEventListener('change', function() {
+            const organ = this.value;
+            if (!organ) {
+                document.getElementById('organInfo').classList.add('hidden');
+                document.getElementById('criteriaSection').classList.add('hidden');
+                document.getElementById('resultSection').classList.remove('show');
+                document.getElementById('ihcSection').classList.remove('show');
+                return;
+            }
+            
+            selectedOrgan = organData[organ];
+            
+            document.getElementById('organInfoText').textContent = selectedOrgan.info;
+            document.getElementById('organInfo').classList.remove('hidden');
+            
+            const grid = document.getElementById('criteriaGrid');
+            grid.innerHTML = '';
+            selectedOrgan.criteria.forEach((criterion, index) => {
+                const div = document.createElement('div');
+                div.className = 'criterion';
+                div.innerHTML = `
+                    <label>
+                        <input type="checkbox" id="criterion${index}" data-weight="${criterion.weight}">
+                        <span class="criterion-text">
+                            ${criterion.text}
+                            <span class="criterion-weight">${'+'.repeat(criterion.weight)}</span>
+                        </span>
+                    </label>
+                `;
+                grid.appendChild(div);
+            });
+            
+            const ddList = document.getElementById('ddList');
+            ddList.innerHTML = '';
+            selectedOrgan.dd.forEach(dd => {
+                const li = document.createElement('li');
+                li.textContent = dd;
+                ddList.appendChild(li);
+            });
+            
+            document.getElementById('criteriaSection').classList.remove('hidden');
+            document.getElementById('resultSection').classList.remove('show');
+            document.getElementById('ihcSection').classList.remove('show');
+        });
+        
+        function calculateScore() {
+            if (!selectedOrgan) return;
+            
+            let score = 0;
+            const maxScore = selectedOrgan.criteria.reduce((sum, c) => sum + c.weight, 0);
+            
+            selectedOrgan.criteria.forEach((criterion, index) => {
+                const checkbox = document.getElementById(`criterion${index}`);
+                if (checkbox && checkbox.checked) {
+                    score += criterion.weight;
+                }
+            });
+            
+            const percentage = (score / maxScore * 100).toFixed(0);
+            
+            const resultSection = document.getElementById('resultSection');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultText = document.getElementById('resultText');
+            
+            scoreDisplay.textContent = `${score} / ${maxScore} (${percentage}%)`;
+            
+            resultSection.classList.remove('result-high', 'result-medium', 'result-low');
+            
+            if (score >= maxScore * 0.6) {
+                resultSection.classList.add('result-high');
+                resultTitle.textContent = '✅ IHC IgG4/IgG fortemente indicata';
+                resultText.innerHTML = `
+                    <strong>Interpretazione:</strong> Il quadro morfologico è altamente suggestivo di IgG4-RD.<br><br>
+                    <strong>Azione:</strong> Procedere con immunoistochimica per IgG4 e IgG totali su sezioni seriali.<br><br>
+                    <strong>Nota:</strong> Assicurarsi di escludere le diagnosi differenziali elencate sopra prima di confermare la diagnosi.
+                `;
+                document.getElementById('ihcSection').classList.add('show');
+            } else if (score >= maxScore * 0.35) {
+                resultSection.classList.add('result-medium');
+                resultTitle.textContent = '⚠️ IHC consigliata se contesto clinico compatibile';
+                resultText.innerHTML = `
+                    <strong>Interpretazione:</strong> Il quadro morfologico mostra alcuni elementi compatibili con IgG4-RD, ma non è diagnostico.<br><br>
+                    <strong>Azione:</strong> 
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Valutare il contesto clinico (imaging, sierologia IgG4, coinvolgimento multi-organo)</li>
+                        <li>Se il sospetto clinico è alto, procedere con IHC</li>
+                        <li>Considerare diagnosi differenziali alternative</li>
+                    </ul>
+                `;
+                document.getElementById('ihcSection').classList.add('show');
+            } else {
+                resultSection.classList.add('result-low');
+                resultTitle.textContent = '❌ IgG4-RD improbabile - Rivalutare diagnosi';
+                resultText.innerHTML = `
+                    <strong>Interpretazione:</strong> Il quadro morfologico non è compatibile con IgG4-RD.<br><br>
+                    <strong>Azione:</strong> 
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>IHC per IgG4 <strong>non indicata</strong> in assenza di forte sospetto clinico</li>
+                        <li>Riconsiderare diagnosi differenziali</li>
+                        <li>Valutare altri processi infiammatori cronici, infettivi o neoplastici</li>
+                    </ul>
+                `;
+                document.getElementById('ihcSection').classList.remove('show');
+            }
+            
+            resultSection.classList.add('show');
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function interpretIHC() {
+            if (!selectedOrgan) return;
+            
+            const igg4Count = parseFloat(document.getElementById('igg4Count').value);
+            const iggTotal = parseFloat(document.getElementById('iggTotal').value);
+            
+            if (!igg4Count || igg4Count < 0) {
+                alert('Inserire un valore valido per IgG4+');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('ihcResult');
+            
+            const meetsThreshold = igg4Count >= selectedOrgan.threshold;
+            
+            let resultHTML = '<h4>Risultato IHC</h4>';
+            resultHTML += `<p><strong>IgG4+ per HPF:</strong> ${igg4Count} (soglia organo: >${selectedOrgan.threshold})</p>`;
+            
+            if (meetsThreshold) {
+                resultHTML += `<p style="color: #2e7d32;">✅ IgG4+ sopra soglia per questo organo</p>`;
+            } else {
+                resultHTML += `<p style="color: #f57c00;">⚠️ IgG4+ sotto soglia per questo organo</p>`;
+            }
+            
+            let ratio = null;
+            let meetsRatio = false;
+            
+            if (iggTotal && iggTotal > 0) {
+                ratio = (igg4Count / iggTotal * 100).toFixed(1);
+                meetsRatio = ratio >= selectedOrgan.ratio;
+                
+                resultHTML += `<div class="ratio-value">${ratio}%</div>`;
+                resultHTML += `<p><strong>Ratio IgG4/IgG:</strong> ${ratio}% (soglia: >${selectedOrgan.ratio}%)</p>`;
+                
+                if (meetsRatio) {
+                    resultHTML += `<p style="color: #2e7d32;">✅ Ratio sopra soglia diagnostica</p>`;
+                } else {
+                    resultHTML += `<p style="color: #f57c00;">⚠️ Ratio sotto soglia diagnostica</p>`;
+                }
+            } else {
+                resultHTML += `<p style="color: #666; font-style: italic;">Ratio non calcolabile (IgG totali non fornite)</p>`;
+            }
+            
+            if (ratio !== null) {
+                if (meetsThreshold && meetsRatio) {
+                    resultHTML += `
+                        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #4caf50;">
+                            <strong style="color: #2e7d32;">✅ COMPATIBILE CON IgG4-RD</strong>
+                            <p style="margin-top: 10px;">Sia il conteggio IgG4+ che il ratio IgG4/IgG soddisfano i criteri diagnostici per questo organo.</p>
+                            <p style="margin-top: 10px;"><strong>Raccomandazione:</strong> Diagnosi compatibile con IgG4-RD. Correlare con clinica, imaging e sierologia per conferma finale secondo criteri ACR/EULAR 2019.</p>
+                        </div>
+                    `;
+                } else if (meetsThreshold || (ratio >= 30 && ratio < selectedOrgan.ratio)) {
+                    resultHTML += `
+                        <div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #ff9800;">
+                            <strong style="color: #f57c00;">⚠️ BORDERLINE / SOSPETTO</strong>
+                            <p style="margin-top: 10px;">I criteri IHC sono parzialmente soddisfatti. Il quadro potrebbe essere compatibile con IgG4-RD ma richiede correlazione clinico-patologica stretta.</p>
+                            <p style="margin-top: 10px;"><strong>Raccomandazione:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Rivalutare morfologia EE</li>
+                                <li>Verificare policlonalità (lambda/kappa)</li>
+                                <li>Correlare con sierologia IgG4, imaging, coinvolgimento multi-organo</li>
+                                <li>Considerare biopsia in altra sede se multi-organo</li>
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    resultHTML += `
+                        <div style="background: #ffebee; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #f44336;">
+                            <strong style="color: #c62828;">❌ NON COMPATIBILE CON IgG4-RD</strong>
+                            <p style="margin-top: 10px;">I criteri IHC non sono soddisfatti. Il conteggio IgG4+ e/o il ratio sono insufficienti per la diagnosi.</p>
+                            <p style="margin-top: 10px;"><strong>Raccomandazione:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Escludere IgG4-RD come diagnosi primaria</li>
+                                <li>Riconsiderare diagnosi differenziali</li>
+                                <li>Valutare possibile flogosi cronica aspecifica, reattiva o altra eziologia</li>
+                                <li>Se forte sospetto clinico persiste, considerare biopsia in altra sede</li>
+                            </ul>
+                        </div>
+                    `;
+                }
+            } else {
+                if (meetsThreshold) {
+                    resultHTML += `
+                        <div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #ff9800;">
+                            <strong style="color: #f57c00;">⚠️ RISULTATO PARZIALE</strong>
+                            <p style="margin-top: 10px;">Il conteggio IgG4+ è sopra soglia, ma manca il ratio IgG4/IgG per conferma completa.</p>
+                            <p style="margin-top: 10px;"><strong>Raccomandazione:</strong> Eseguire colorazione per IgG totali su sezione seriale per calcolare il ratio. Un alto numero di IgG4+ senza ratio può essere fuorviante (es. plasmocitosi policlonale reattiva).</p>
+                        </div>
+                    `;
+                } else {
+                    resultHTML += `
+                        <div style="background: #ffebee; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #f44336;">
+                            <strong style="color: #c62828;">❌ IgG4+ INSUFFICIENTI</strong>
+                            <p style="margin-top: 10px;">Il conteggio IgG4+ è sotto soglia per questo organo.</p>
+                            <p style="margin-top: 10px;"><strong>Raccomandazione:</strong> IgG4-RD improbabile. Considerare altre diagnosi.</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            resultDiv.innerHTML = resultHTML;
+            resultDiv.classList.remove('hidden');
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
