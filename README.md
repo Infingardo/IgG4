@@ -10,7 +10,7 @@ Questo strumento web interattivo guida i patologi nella valutazione istologica d
 - **Calcolo automatico dello score** di probabilità
 - **Interpretazione dei risultati IHC** (IgG4/IgG ratio)
 - **Diagnosi differenziali** per ogni organo
-- **Bibliografia aggiornata** basata su criteri ACR/EULAR 2019
+- **Bibliografia aggiornata e cliccabile** con link diretti a PubMed/DOI
 
 ## 🚀 Utilizzo
 
@@ -25,13 +25,16 @@ Oppure scarica `index.html` e aprilo localmente nel browser.
 3. **Score diagnostico**: interpretazione automatica (alto/medio/basso sospetto)
 4. **Calcolo ratio IgG4/IgG**: interpretazione risultati immunoistochimici
 5. **Diagnosi differenziali**: alert per ogni organo
+6. **Bibliografia collassabile**: riferimenti principali e organo-specifici con link diretti
 
 ## 📚 Riferimenti
 
 Basato su:
-- Wallace ZS et al. ACR/EULAR 2019 Classification Criteria for IgG4-RD
-- Deshpande V et al. Consensus statement on pathology of IgG4-RD (Mod Pathol 2012)
-- Kamisawa T et al. IgG4-related disease (Lancet 2015)
+- **Wallace ZS et al.** ACR/EULAR 2019 Classification Criteria for IgG4-RD (*Arthritis Rheumatol* 2020)
+- **Deshpande V et al.** Consensus statement on pathology of IgG4-RD (*Mod Pathol* 2012)
+- **Kamisawa T et al.** IgG4-related disease (*Lancet* 2015)
+
+Più altri riferimenti organo-specifici (pancreas, ghiandole salivari, rene, vie biliari, orbita) accessibili tramite la sezione bibliografia interattiva.
 
 ## ⚠️ Disclaimer
 
@@ -43,13 +46,13 @@ Contributi, segnalazioni di bug e suggerimenti sono benvenuti! Apri una issue o 
 
 ## 📄 Licenza
 
-MIT License (o altra a tua scelta)
+MIT License
 
 ## 👤 Autore
 
-[Il tuo nome] - Patologo
+Filippo Fraggetta - Patologo
 
 ---
 
 **Ultima versione dei criteri**: ACR/EULAR 2019  
-**Ultimo aggiornamento**: Ottobre 2025
+**Ultimo aggiornamento**: Novembre 2025
