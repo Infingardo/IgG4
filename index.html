@@ -184,7 +184,6 @@
             color: #c62828;
         }
         
-        /* NUOVO: Box critico per warning IgG4 */
         .critical-box {
             background: #fce4ec;
             border-left: 4px solid #c2185b;
@@ -239,14 +238,8 @@
         }
         
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .result-high {
@@ -272,12 +265,21 @@
         .result-high h3 { color: #2e7d32; }
         .result-medium h3 { color: #f57c00; }
         .result-low h3 { color: #c62828; }
-        
+
+        /* MODIFICA: score qualitativo */
         .score-display {
-            font-size: 48px;
+            font-size: 32px;
             font-weight: bold;
             text-align: center;
             margin: 20px 0;
+        }
+
+        .score-category {
+            font-size: 20px;
+            text-align: center;
+            margin-top: 8px;
+            font-style: italic;
+            color: #555;
         }
         
         .ihc-section {
@@ -365,7 +367,6 @@
             font-style: italic;
         }
         
-        /* Stili per sezione genera referto */
         .report-section {
             margin-top: 30px;
             padding: 25px;
@@ -432,7 +433,7 @@
     <div class="container">
         <div class="header">
             <h1>🔬 Algoritmo Diagnostico IgG4-RD</h1>
-            <p>Valutazione istologica per malattia IgG4-correlata</p>
+            <p>Valutazione istologica per malattia IgG4-correlata — v2.1.0</p>
         </div>
         
         <div class="content">
@@ -493,7 +494,7 @@
                 </button>
             </div>
             
-            <!-- STEP 1: Selezione organo (inizialmente nascosto) -->
+            <!-- STEP 1: Selezione organo -->
             <div id="mainSection" class="hidden">
                 <div class="section">
                     <div class="section-title">
@@ -540,7 +541,7 @@
                         <p class="hpf-note">* HPF = High Power Field, obiettivo 40×, area standard ~0.237 mm². Contare la media di 3 HPF nelle aree a maggiore densità.</p>
                     </div>
                     
-                    <!-- NUOVO: Warning specifico linfonodo -->
+                    <!-- Warning linfonodo -->
                     <div id="lymphWarning" class="critical-box hidden" style="margin-top: 15px;">
                         <strong>🚨 ATTENZIONE - LINFONODO:</strong>
                         <p style="margin-top: 10px; font-size: 14px;">
@@ -552,6 +553,8 @@
                             <ul style="margin-left: 20px; margin-top: 5px;">
                                 <li>Malattia di Castleman (pattern "a bulbo di cipolla", HHV8 se MCD)</li>
                                 <li>Linfoma (Hodgkin, plasmablastico, MALT, marginal zone)</li>
+                                <li><strong>Malattia di Rosai-Dorfman</strong> (istiociti S100+/CD68+ con emperipolesi, specie nelle forme extranodali)</li>
+                                <li><strong>Plasmablastosi EBV-correlata</strong> (pazienti immunocompromessi: trapianto, HIV, terapia biologica — EBER ISH obbligatoria in questi contesti)</li>
                                 <li>Linfoadenopatia reattiva aspecifica</li>
                                 <li>Localizzazione linfonodale di altra patologia sistemica</li>
                             </ul>
@@ -569,13 +572,16 @@
                         <strong>💡 Nota:</strong> I criteri sotto sono da valutare su EE. La quantificazione esatta delle plasmacellule IgG4+ richiede IHC (Step 3).
                     </div>
                     
-                    <!-- NUOVO: Warning forme burnt-out -->
+                    <!-- MODIFICA: warning burnt-out aggiornato con IHC falsa negativa -->
                     <div class="warning-box" style="margin-bottom: 15px;">
                         <strong>⚠️ Forme "burnt-out" / paucicellulari:</strong>
                         <p style="margin-top: 10px; font-size: 14px;">
                             Esistono forme tardive/fibrotiche di IgG4-RD con <strong>fibrosi storiforme dominante e poche plasmacellule residue</strong>. 
                             In questi casi l'infiltrato può essere modesto o focale. Se la fibrosi storiforme è convincente ma le plasmacellule sono scarse, 
-                            considerare comunque IHC e correlare con imaging/sierologia. La diagnosi è pattern-based, non solo cell-count-based.
+                            considerare comunque IHC e correlare con imaging/sierologia.<br><br>
+                            <strong style="color: #c62828;">⚠️ Attenzione: nelle forme burnt-out avanzate la IHC per IgG4 può risultare falsamente negativa.</strong> 
+                            Le plasmacellule IgG4+ si esauriscono nella fase fibrotica — una IHC negativa non esclude IgG4-RD se il pattern morfologico è convincente e il contesto clinico è compatibile. 
+                            La diagnosi è <em>pattern-based</em>, non <em>cell-count-based</em>.
                         </p>
                     </div>
                     
@@ -601,10 +607,10 @@
                         <strong>📊 Nota metodologica:</strong> Lo score utilizzato è un <strong>sistema empirico di supporto decisionale</strong>, non un criterio validato. 
                         I pesi sono derivati dalla frequenza e specificità dei criteri in letteratura (Deshpande 2012, Zen 2012) ma non sono stati formalmente validati in studi prospettici. 
                         I criteri classificativi ufficiali sono ACR/EULAR 2019, che integrano dati clinici, sierologici, imaging e istologia.<br><br>
-                        <strong style="color: #c62828;">⚠️ Questo valore NON va riportato in diagnosi.</strong>
+                        <strong style="color: #c62828;">⚠️ Il punteggio grezzo è uno strumento orientativo interno. NON va riportato in diagnosi.</strong>
                     </div>
                     
-                    <!-- NUOVO: Nota variabilità inter-osservatore -->
+                    <!-- Nota variabilità inter-osservatore -->
                     <div class="info-box" style="margin-top: 15px;">
                         <strong>📏 Variabilità inter-osservatore:</strong>
                         <p style="margin-top: 5px; font-size: 13px;">
@@ -614,13 +620,15 @@
                     </div>
                     
                     <button class="button" onclick="calculateScore()" style="margin-top: 20px;">
-                        Calcola Score
+                        Valuta morfologia
                     </button>
                 </div>
                 
                 <div id="resultSection" class="result">
                     <h3 id="resultTitle"></h3>
+                    <!-- MODIFICA: score qualitativo, no percentuale -->
                     <div class="score-display" id="scoreDisplay"></div>
+                    <div class="score-category" id="scoreCategory"></div>
                     <div id="resultText"></div>
                 </div>
                 
@@ -630,7 +638,7 @@
                         <span>Interpretazione Immunoistochimica</span>
                     </div>
                     
-                    <!-- NUOVO: Warning critico IgG4 ≠ IgG4-RD -->
+                    <!-- Warning critico IgG4 ≠ IgG4-RD -->
                     <div class="critical-box" style="margin-bottom: 20px;">
                         <strong>🚨 ATTENZIONE CRITICA:</strong>
                         <p style="margin-top: 10px; font-size: 14px;">
@@ -644,8 +652,12 @@
                                 <li>Infezioni croniche</li>
                                 <li>Malattia di Castleman</li>
                                 <li>Vasculiti (GPA, EGPA)</li>
+                                <li><strong>Plasmablastosi EBV-correlata</strong> (immunocompromessi: trapianto, HIV, terapia biologica — plasmacellule atipiche, EBV-EBER+, CD138+, spesso IgG4+ elevate per attivazione policlonale)</li>
                             </ul>
                             <br>
+                            <div style="background: #fff; padding: 10px; border-radius: 5px; border-left: 3px solid #880e4f; margin-bottom: 10px;">
+                                <strong style="color: #880e4f;">⚠️ Contesto di immunosoppressione:</strong> In pazienti trapiantati, in terapia biologica o HIV+, una plasmacitosi densa IgG4-ricca deve fare alzare il livello di allerta per EBV. Eseguire <strong>EBER ISH</strong> prima di concludere per IgG4-RD.
+                            </div>
                             <strong style="color: #880e4f;">La diagnosi di IgG4-RD è PATTERN-BASED, non cell-count-based. 
                             Il numero di IgG4+ da solo non fa diagnosi.</strong>
                         </p>
@@ -679,7 +691,7 @@
                     <div id="reportSection" class="report-section">
                         <div class="section-title">
                             <span style="font-size: 20px;">📄</span>
-                            <span>Genera Testo per Referto</span>
+                            <span>Genera Commento Morfologico per Referto</span>
                         </div>
                         
                         <div class="info-box" style="margin-bottom: 15px;">
@@ -701,6 +713,7 @@
                 </div>
             </div>
             
+            <!-- Tabella soglie -->
             <div class="section" style="margin-top: 40px;">
                 <div class="section-title" style="cursor: pointer;" onclick="toggleThresholds()">
                     <span style="font-size: 20px;">📊</span>
@@ -747,7 +760,7 @@
                                     <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">≥100</td>
                                     <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">≥50</td>
                                     <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">≥40%</td>
-                                    <td style="padding: 10px; border: 1px solid #ddd; font-size: 12px; color: #c62828; font-weight: 600;">⚠️ Cheuk 2012; DD linfoma! Overcall frequente!</td>
+                                    <td style="padding: 10px; border: 1px solid #ddd; font-size: 12px; color: #c62828; font-weight: 600;">⚠️ Cheuk 2012; DD linfoma, Rosai-Dorfman! Overcall frequente!</td>
                                 </tr>
                                 <tr style="background: #fff;">
                                     <td style="padding: 10px; border: 1px solid #ddd; font-weight: 600;">Rene</td>
@@ -761,7 +774,7 @@
                                     <td style="padding: 10px; border: 1px solid #ddd; text-align: center; color: #c62828; font-weight: 600;">≥10 ⚠️</td>
                                     <td style="padding: 10px; border: 1px solid #ddd; text-align: center; color: #c62828; font-weight: 600;">≥10 ⚠️</td>
                                     <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">≥40%</td>
-                                    <td style="padding: 10px; border: 1px solid #ddd; font-size: 12px;">Spesso paucicellulare</td>
+                                    <td style="padding: 10px; border: 1px solid #ddd; font-size: 12px;">Spesso paucicellulare; IHC può essere falsamente negativa in fase burnt-out</td>
                                 </tr>
                                 <tr style="background: #fff;">
                                     <td style="padding: 10px; border: 1px solid #ddd; font-weight: 600;">Polmone</td>
@@ -823,6 +836,7 @@
                                 <li>Le soglie per biopsia sono indicative; su materiale limitato il <strong>ratio ha priorità</strong></li>
                                 <li>Contare sempre la <strong>media di 3 HPF</strong> nelle aree a maggiore densità</li>
                                 <li>⚠️ = soglia particolarmente bassa, attenzione a falsi positivi</li>
+                                <li>In forme burnt-out avanzate la IHC può risultare <strong>falsamente negativa</strong></li>
                             </ul>
                         </div>
                         
@@ -840,6 +854,7 @@
                 </div>
             </div>
             
+            <!-- Bibliografia -->
             <div class="section" style="margin-top: 40px;">
                 <div class="section-title" style="cursor: pointer;" onclick="toggleBibliography()">
                     <span style="font-size: 20px;">📚</span>
@@ -918,6 +933,13 @@
                             <em>Semin Diagn Pathol</em> 2012;29(4):226-234.<br>
                             <a href="https://pubmed.ncbi.nlm.nih.gov/23068302/" target="_blank" style="color: #667eea; text-decoration: none;">📎 PubMed</a>
                         </div>
+
+                        <div style="margin-bottom: 15px;">
+                            <strong>Rosai-Dorfman DD - Emile JF, Abla O, Fraitag S, et al.</strong><br>
+                            Revised classification of histiocytoses and neoplasms of the macrophage-dendritic cell lineages.<br>
+                            <em>Blood</em> 2016;127(22):2672-2681.<br>
+                            <a href="https://pubmed.ncbi.nlm.nih.gov/26966089/" target="_blank" style="color: #667eea; text-decoration: none;">📎 PubMed</a>
+                        </div>
                         
                         <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-top: 20px; border-left: 4px solid #2196f3;">
                             <strong style="color: #1976d2;">💡 Nota</strong><br>
@@ -943,8 +965,8 @@
                 criteria: [
                     {text: "Infiltrato plasmacellulare denso (valutazione semiquantitativa: abbondante)", weight: 3},
                     {text: "Fibrosi storiforme evidente (pattern a ruota di carro)", weight: 3},
-                    {text: "Flebite obliterante tipica (occlusione luminale completa)", weight: 2},
-                    {text: "Coinvolgimento venoso parziale/suggestivo (parete infiltrata, lume compresso)", weight: 1},
+                    {text: "Flebite obliterante tipica (occlusione luminale completa, documentabile)", weight: 2},
+                    {text: "Coinvolgimento venoso parziale/suggestivo — ATTENZIONE: criterio soggettivo, valutare con cautela (parete infiltrata, lume compresso ma non occluso)", weight: 1},
                     {text: "Eosinofili sparsi o in piccoli aggregati", weight: 1},
                     {text: "Aspetto pseudotumorale / massa infiammatoria", weight: 2},
                     {text: "Assenza di atipia epiteliale significativa", weight: 2}
@@ -962,8 +984,8 @@
                 criteria: [
                     {text: "Infiltrato plasmacellulare denso diffuso", weight: 3},
                     {text: "Fibrosi periductale concentrica e atrofia acinare", weight: 3},
-                    {text: "Flebite obliterante tipica (occlusione luminale completa)", weight: 1},
-                    {text: "Coinvolgimento venoso parziale/suggestivo (parete infiltrata, lume compresso)", weight: 1},
+                    {text: "Flebite obliterante tipica (occlusione luminale completa, documentabile)", weight: 1},
+                    {text: "Coinvolgimento venoso parziale/suggestivo — ATTENZIONE: criterio soggettivo, valutare con cautela", weight: 1},
                     {text: "Eosinofili sparsi", weight: 1},
                     {text: "Assenza di centri germinativi prominenti/multipli", weight: 2},
                     {text: "Assenza di LEL (lymphoepithelial lesions)", weight: 2}
@@ -979,6 +1001,8 @@
                     "Linfoma plasmablastico (CD138+, clonalità, MUM1+, Ki67 alto) - ESCLUDERE SEMPRE",
                     "Linfoma di Hodgkin (cellule RS, CD30+, CD15+) - ESCLUDERE SEMPRE",
                     "Linfoma MALT / marginal zone (clonalità B) - ESCLUDERE SEMPRE",
+                    "Malattia di Rosai-Dorfman (istiociti S100+/CD68+ con emperipolesi; specie forme extranodali) - ESCLUDERE",
+                    "Plasmablastosi EBV-correlata (immunocompromessi: EBER ISH, CD138+, atipia plasmacellulare, Ki67 elevato) - ESCLUDERE",
                     "Linfoadenopatia reattiva aspecifica (diagnosi più probabile!)"
                 ],
                 criteria: [
@@ -1003,8 +1027,8 @@
                 criteria: [
                     {text: "Infiltrato plasmacellulare denso periportale/periduttale", weight: 3},
                     {text: "Fibrosi storiforme o densa periportale", weight: 3},
-                    {text: "Flebite obliterante tipica portale (occlusione luminale completa)", weight: 2},
-                    {text: "Coinvolgimento venoso parziale/suggestivo (parete infiltrata, lume compresso)", weight: 1},
+                    {text: "Flebite obliterante tipica portale (occlusione luminale completa, documentabile)", weight: 2},
+                    {text: "Coinvolgimento venoso parziale/suggestivo — ATTENZIONE: criterio soggettivo, valutare con cautela", weight: 1},
                     {text: "Eosinofili nell'infiltrato", weight: 1},
                     {text: "Colangite linfocitica (infiltrato periepiteliale)", weight: 2},
                     {text: "Assenza di atipia epiteliale biliare", weight: 2}
@@ -1042,8 +1066,8 @@
                 criteria: [
                     {text: "Infiltrato plasmacellulare perivascolare/peribronchiale denso", weight: 3},
                     {text: "Fibrosi interstiziale o peribronchiale", weight: 2},
-                    {text: "Flebite obliterante tipica (occlusione luminale completa)", weight: 1},
-                    {text: "Coinvolgimento venoso parziale/suggestivo (parete infiltrata, lume compresso)", weight: 1},
+                    {text: "Flebite obliterante tipica (occlusione luminale completa, documentabile)", weight: 1},
+                    {text: "Coinvolgimento venoso parziale/suggestivo — ATTENZIONE: criterio soggettivo, valutare con cautela", weight: 1},
                     {text: "Eosinofili presenti", weight: 1},
                     {text: "Assenza di granulomi necrotizzanti", weight: 3},
                     {text: "Assenza di pattern organizing pneumonia", weight: 2}
@@ -1062,8 +1086,8 @@
                 criteria: [
                     {text: "Infiltrato plasmacellulare denso nello stroma fibroso", weight: 3},
                     {text: "Fibrosi storiforme estesa", weight: 3},
-                    {text: "Flebite obliterante tipica (occlusione luminale completa)", weight: 1},
-                    {text: "Coinvolgimento venoso parziale/suggestivo (parete infiltrata, lume compresso)", weight: 1},
+                    {text: "Flebite obliterante tipica (occlusione luminale completa, documentabile)", weight: 1},
+                    {text: "Coinvolgimento venoso parziale/suggestivo — ATTENZIONE: criterio soggettivo, valutare con cautela", weight: 1},
                     {text: "Coinvolgimento 'a manicotto' di strutture vascolari (aorta, iliache)", weight: 2},
                     {text: "Eosinofili presenti", weight: 1},
                     {text: "Assenza di atipia cellulare o mitosi", weight: 2}
@@ -1101,8 +1125,8 @@
                 criteria: [
                     {text: "Infiltrato plasmacellulare denso nella ghiandola lacrimale/tessuti orbitari", weight: 3},
                     {text: "Fibrosi sclerosante", weight: 3},
-                    {text: "Flebite obliterante tipica (occlusione luminale completa)", weight: 1},
-                    {text: "Coinvolgimento venoso parziale/suggestivo (parete infiltrata, lume compresso)", weight: 1},
+                    {text: "Flebite obliterante tipica (occlusione luminale completa, documentabile)", weight: 1},
+                    {text: "Coinvolgimento venoso parziale/suggestivo — ATTENZIONE: criterio soggettivo, valutare con cautela", weight: 1},
                     {text: "Eosinofili presenti", weight: 1},
                     {text: "Assenza di granulomi", weight: 2},
                     {text: "Assenza di LEL", weight: 2}
@@ -1131,7 +1155,7 @@
                 thresholdResection: 10,
                 thresholdBiopsy: 10,
                 ratio: 40,
-                info: "Soglia IgG4+: >10/HPF (ATTENZIONE: soglia bassa!) | Ratio IgG4/IgG: >40% | Pachimeningite ipertrofica, può essere paucicellulare.",
+                info: "Soglia IgG4+: >10/HPF (ATTENZIONE: soglia bassa!) | Ratio IgG4/IgG: >40% | Pachimeningite ipertrofica, può essere paucicellulare. In fase burnt-out la IHC può risultare falsamente negativa.",
                 dd: [
                     "Pachimeningite infettiva (TB, funghi) - colorazioni speciali!",
                     "Pachimeningite da sarcoidosi (granulomi)",
@@ -1158,8 +1182,8 @@
                 criteria: [
                     {text: "Infiltrato plasmacellulare denso intratiroideo", weight: 3},
                     {text: "Fibrosi storiforme o densa", weight: 3},
-                    {text: "Flebite obliterante tipica (occlusione luminale completa)", weight: 1},
-                    {text: "Coinvolgimento venoso parziale/suggestivo (parete infiltrata, lume compresso)", weight: 1},
+                    {text: "Flebite obliterante tipica (occlusione luminale completa, documentabile)", weight: 1},
+                    {text: "Coinvolgimento venoso parziale/suggestivo — ATTENZIONE: criterio soggettivo, valutare con cautela", weight: 1},
                     {text: "Atrofia follicolare", weight: 2},
                     {text: "Eosinofili presenti", weight: 1},
                     {text: "Fibrosi contenuta entro la capsula (DD Riedel)", weight: 2}
@@ -1196,8 +1220,8 @@
                 criteria: [
                     {text: "Infiltrato plasmacellulare denso", weight: 3},
                     {text: "Fibrosi storiforme (pattern 'a ruota di carro')", weight: 3},
-                    {text: "Flebite obliterante tipica (occlusione luminale completa)", weight: 2},
-                    {text: "Coinvolgimento venoso parziale/suggestivo (parete infiltrata, lume compresso)", weight: 1},
+                    {text: "Flebite obliterante tipica (occlusione luminale completa, documentabile)", weight: 2},
+                    {text: "Coinvolgimento venoso parziale/suggestivo — ATTENZIONE: criterio soggettivo, valutare con cautela", weight: 1},
                     {text: "Eosinofili presenti nell'infiltrato", weight: 1},
                     {text: "Aspetto pseudotumorale / massa infiammatoria", weight: 2},
                     {text: "Assenza di granulomi, necrosi, atipia franca", weight: 2}
@@ -1219,7 +1243,6 @@
                 warning.classList.add('hidden');
             }
             
-            // Reset organ selection if specimen type changes
             document.getElementById('organ').value = '';
             document.getElementById('organInfo').classList.add('hidden');
             document.getElementById('lymphWarning').classList.add('hidden');
@@ -1270,18 +1293,15 @@
             
             selectedOrgan = organData[organ];
             
-            // Mostra warning specifico per linfonodo
             if (organ === 'lymph') {
                 document.getElementById('lymphWarning').classList.remove('hidden');
             } else {
                 document.getElementById('lymphWarning').classList.add('hidden');
             }
             
-            // Determina la soglia in base al tipo di campione
             const threshold = specimenType === 'biopsy' ? selectedOrgan.thresholdBiopsy : selectedOrgan.thresholdResection;
             const specimenLabel = specimenType === 'biopsy' ? 'BIOPSIA' : 'RESEZIONE';
             
-            // Aggiorna info con soglia corretta
             let infoText = selectedOrgan.info.replace(/Soglia IgG4\+: >\d+\/HPF/, `Soglia IgG4+ (${specimenLabel}): ≥${threshold}/HPF`);
             if (specimenType === 'biopsy' && selectedOrgan.thresholdBiopsy < selectedOrgan.thresholdResection) {
                 infoText += ` [Nota: soglia ridotta per biopsia; resezione richiederebbe ≥${selectedOrgan.thresholdResection}/HPF]`;
@@ -1295,6 +1315,12 @@
             selectedOrgan.criteria.forEach((criterion, index) => {
                 const div = document.createElement('div');
                 div.className = 'criterion';
+                // MODIFICA: evidenzia visivamente i criteri con avvertenza soggettività flebite
+                const isSubjectivePhlebitis = criterion.text.includes('ATTENZIONE: criterio soggettivo');
+                if (isSubjectivePhlebitis) {
+                    div.style.borderLeftColor = '#ff9800';
+                    div.style.background = '#fff8f0';
+                }
                 div.innerHTML = `
                     <label>
                         <input type="checkbox" id="criterion${index}" data-weight="${criterion.weight}">
@@ -1307,7 +1333,6 @@
                 grid.appendChild(div);
             });
             
-            // Reset polyclonal checkbox
             document.getElementById('polyclonal').checked = false;
             
             const ddList = document.getElementById('ddList');
@@ -1331,9 +1356,7 @@
             
             let score = 0;
             let maxScore = selectedOrgan.criteria.reduce((sum, c) => sum + c.weight, 0);
-            
-            // Add polyclonal weight to max
-            maxScore += 2;
+            maxScore += 2; // polyclonal
             
             selectedOrgan.criteria.forEach((criterion, index) => {
                 const checkbox = document.getElementById(`criterion${index}`);
@@ -1342,32 +1365,31 @@
                 }
             });
             
-            // Check polyclonal
             if (document.getElementById('polyclonal').checked) {
                 score += 2;
             }
             
-            const percentage = (score / maxScore * 100).toFixed(0);
-            
             const resultSection = document.getElementById('resultSection');
             const scoreDisplay = document.getElementById('scoreDisplay');
+            const scoreCategory = document.getElementById('scoreCategory');
             const resultTitle = document.getElementById('resultTitle');
             const resultText = document.getElementById('resultText');
             
-            scoreDisplay.textContent = `${score} / ${maxScore} (${percentage}%)`;
+            // MODIFICA: score grezzo senza percentuale
+            scoreDisplay.textContent = `${score} / ${maxScore}`;
             
             resultSection.classList.remove('result-high', 'result-medium', 'result-low');
             
             if (score >= maxScore * 0.6) {
                 resultSection.classList.add('result-high');
+                scoreCategory.textContent = 'Morfologia suggestiva per IgG4-RD';
                 resultTitle.textContent = '✅ IHC IgG4/IgG fortemente indicata';
                 resultText.innerHTML = `
                     <strong>Interpretazione:</strong> Il quadro morfologico è altamente suggestivo per IgG4-RD.<br><br>
                     <strong>Azione:</strong> Procedere con immunoistochimica per IgG4 e IgG totali su sezioni seriali.<br><br>
-                    <strong>Nota:</strong> Questo score è un supporto empirico. La diagnosi definitiva richiede criteri ACR/EULAR 2019 completi (clinica + sierologia + imaging + istologia).
+                    <strong>Nota:</strong> Questo punteggio è un orientamento interno. La diagnosi definitiva richiede criteri ACR/EULAR 2019 completi (clinica + sierologia + imaging + istologia).
                 `;
                 document.getElementById('ihcSection').classList.add('show');
-                // Mostra nota specifica per biopsie
                 if (specimenType === 'biopsy') {
                     document.getElementById('biopsyRatioNote').classList.remove('hidden');
                 } else {
@@ -1375,10 +1397,11 @@
                 }
             } else if (score >= maxScore * 0.35) {
                 resultSection.classList.add('result-medium');
+                scoreCategory.textContent = 'Morfologia parzialmente compatibile — contesto clinico essenziale';
                 resultTitle.textContent = '⚠️ IHC consigliata se contesto clinico compatibile';
                 resultText.innerHTML = `
                     <strong>Interpretazione:</strong> Il quadro morfologico mostra alcuni elementi compatibili con IgG4-RD, ma non è tipico.<br><br>
-                    <strong>Azione:</strong> 
+                    <strong>Azione:</strong>
                     <ul style="margin-left: 20px; margin-top: 10px;">
                         <li>Valutare il contesto clinico (imaging, sierologia IgG4, coinvolgimento multi-organo)</li>
                         <li>Se il sospetto clinico è alto, procedere con IHC</li>
@@ -1386,7 +1409,6 @@
                     </ul>
                 `;
                 document.getElementById('ihcSection').classList.add('show');
-                // Mostra nota specifica per biopsie
                 if (specimenType === 'biopsy') {
                     document.getElementById('biopsyRatioNote').classList.remove('hidden');
                 } else {
@@ -1394,10 +1416,11 @@
                 }
             } else {
                 resultSection.classList.add('result-low');
+                scoreCategory.textContent = 'Morfologia non compatibile con IgG4-RD';
                 resultTitle.textContent = '❌ IgG4-RD improbabile - Rivalutare diagnosi';
                 resultText.innerHTML = `
                     <strong>Interpretazione:</strong> Il quadro morfologico non è compatibile con IgG4-RD.<br><br>
-                    <strong>Azione:</strong> 
+                    <strong>Azione:</strong>
                     <ul style="margin-left: 20px; margin-top: 10px;">
                         <li>IHC per IgG4 <strong>non indicata</strong> in assenza di forte sospetto clinico</li>
                         <li>Riconsiderare diagnosi differenziali</li>
@@ -1426,7 +1449,6 @@
                 return;
             }
             
-            // Salva dati IHC per il referto
             lastIHCData = {
                 igg4Count: igg4Count,
                 iggTotal: iggTotal || null,
@@ -1435,7 +1457,6 @@
             
             const resultDiv = document.getElementById('ihcResult');
             
-            // Usa la soglia appropriata per il tipo di campione
             const threshold = specimenType === 'biopsy' ? selectedOrgan.thresholdBiopsy : selectedOrgan.thresholdResection;
             const specimenLabel = specimenType === 'biopsy' ? 'biopsia' : 'resezione';
             
@@ -1504,7 +1525,6 @@
                         </div>
                     `;
                 } else if (specimenType === 'biopsy' && meetsRatio && !meetsThreshold) {
-                    // Caso speciale: biopsia con ratio alto ma conteggio basso (sampling issue)
                     lastIHCResult = 'borderline';
                     resultHTML += `
                         <div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #ff9800;">
@@ -1561,14 +1581,12 @@
             resultDiv.classList.remove('hidden');
             resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             
-            // Mostra sezione genera referto
             showReportSection();
         }
         
         function toggleBibliography() {
             const content = document.getElementById('bibliographyContent');
             const toggle = document.getElementById('bibToggle');
-            
             if (content.classList.contains('hidden')) {
                 content.classList.remove('hidden');
                 toggle.textContent = '▲';
@@ -1581,7 +1599,6 @@
         function toggleThresholds() {
             const content = document.getElementById('thresholdsContent');
             const toggle = document.getElementById('threshToggle');
-            
             if (content.classList.contains('hidden')) {
                 content.classList.remove('hidden');
                 toggle.textContent = '▲';
@@ -1591,7 +1608,6 @@
             }
         }
         
-        // Mappa nomi organi per referto
         const organNames = {
             pancreas: "pancreas",
             salivary: "ghiandola salivare",
@@ -1609,8 +1625,7 @@
             other: "tessuto in esame"
         };
         
-        // Variabili per tracciare lo stato del referto
-        let lastIHCResult = null; // 'compatible', 'borderline', 'incompatible', 'incomplete'
+        let lastIHCResult = null;
         let lastIHCData = {};
         
         function getSelectedCriteria() {
@@ -1620,10 +1635,10 @@
             selectedOrgan.criteria.forEach((criterion, index) => {
                 const checkbox = document.getElementById(`criterion${index}`);
                 if (checkbox && checkbox.checked) {
-                    // Semplifica il testo del criterio per il referto
                     let text = criterion.text
-                        .replace(/\(.*?\)/g, '') // Rimuove parentesi
-                        .replace(/\s+/g, ' ')    // Normalizza spazi
+                        .replace(/\(.*?\)/g, '')
+                        .replace(/—.*$/, '')    // rimuove nota soggettività dal testo referto
+                        .replace(/\s+/g, ' ')
                         .trim()
                         .toLowerCase();
                     selected.push(text);
@@ -1652,11 +1667,12 @@
             const igg4Count = lastIHCData.igg4Count || 0;
             const ratio = lastIHCData.ratio || null;
             
+            // MODIFICA: header cambiato in "COMMENTO MORFOLOGICO"
             let reportText = '';
             
             switch (lastIHCResult) {
                 case 'compatible':
-                    reportText = `NOTA DIAGNOSTICA (IgG4-RD):
+                    reportText = `COMMENTO MORFOLOGICO (IgG4-RD):
 Il quadro morfologico della ${specimenLabel} di ${organName} mostra ${criteriaText}. L'esame immunoistochimico evidenzia ${igg4Count} cellule IgG4+/HPF (soglia per ${organName}: ≥${threshold}/HPF)${ratio ? ` con ratio IgG4/IgG pari a ${ratio}% (soglia ≥40%)` : ''}.
 
 I reperti istologici e immunoistochimici sono compatibili con malattia IgG4-correlata (IgG4-RD).
@@ -1665,7 +1681,7 @@ Si raccomanda correlazione con dati clinici, sierologici (IgG4 sierica) e di ima
                     break;
                     
                 case 'borderline':
-                    reportText = `NOTA DIAGNOSTICA (IgG4-RD):
+                    reportText = `COMMENTO MORFOLOGICO (IgG4-RD):
 Il quadro morfologico della ${specimenLabel} di ${organName} mostra alcuni elementi compatibili con malattia IgG4-correlata, tra cui ${criteriaText}. L'esame immunoistochimico evidenzia ${igg4Count} cellule IgG4+/HPF${ratio ? ` con ratio IgG4/IgG pari a ${ratio}%` : ''}; i valori sono borderline rispetto alle soglie diagnostiche.
 
 I reperti non sono diagnostici per IgG4-RD ma non la escludono.
@@ -1674,7 +1690,7 @@ Si raccomanda stretta correlazione clinico-patologica, eventuale dosaggio IgG4 s
                     break;
                     
                 case 'incompatible':
-                    reportText = `NOTA DIAGNOSTICA (IgG4-RD):
+                    reportText = `COMMENTO MORFOLOGICO (IgG4-RD):
 Il quadro morfologico della ${specimenLabel} di ${organName} non mostra i caratteri tipici della malattia IgG4-correlata. L'esame immunoistochimico evidenzia ${igg4Count} cellule IgG4+/HPF${ratio ? ` con ratio IgG4/IgG pari a ${ratio}%` : ''}, al di sotto delle soglie diagnostiche per ${organName}.
 
 I reperti istologici non supportano la diagnosi di IgG4-RD.
@@ -1683,7 +1699,7 @@ Considerare diagnosi alternative in base al quadro clinico-radiologico. Se il so
                     break;
                     
                 case 'incomplete':
-                    reportText = `NOTA DIAGNOSTICA (IgG4-RD):
+                    reportText = `COMMENTO MORFOLOGICO (IgG4-RD):
 Il quadro morfologico della ${specimenLabel} di ${organName} mostra ${criteriaText}. L'esame immunoistochimico evidenzia ${igg4Count} cellule IgG4+/HPF (soglia per ${organName}: ≥${threshold}/HPF). Il ratio IgG4/IgG non è disponibile.
 
 VALUTAZIONE INCOMPLETA: Si raccomanda esecuzione di colorazione per IgG totali su sezione seriale per calcolare il ratio IgG4/IgG, criterio essenziale per la diagnosi. Un alto numero assoluto di IgG4+ senza ratio può essere fuorviante.`;
@@ -1702,12 +1718,9 @@ VALUTAZIONE INCOMPLETA: Si raccomanda esecuzione di colorazione per IgG totali s
                 textarea.value = reportText;
                 reportSection.classList.add('show');
                 
-                // Reset pulsante copia
                 const copyBtn = document.getElementById('copyBtn');
                 copyBtn.classList.remove('copy-success');
                 copyBtn.innerHTML = '📋 Copia negli Appunti';
-                
-                // Reset readonly
                 textarea.readOnly = true;
             }
         }
@@ -1716,26 +1729,20 @@ VALUTAZIONE INCOMPLETA: Si raccomanda esecuzione di colorazione per IgG totali s
             const textarea = document.getElementById('reportTextarea');
             const copyBtn = document.getElementById('copyBtn');
             
-            // Seleziona il testo
             textarea.select();
-            textarea.setSelectionRange(0, 99999); // Per mobile
+            textarea.setSelectionRange(0, 99999);
             
-            // Copia negli appunti
             navigator.clipboard.writeText(textarea.value).then(() => {
-                // Feedback visivo
                 copyBtn.classList.add('copy-success');
                 copyBtn.innerHTML = '✓ Copiato!';
-                
                 setTimeout(() => {
                     copyBtn.classList.remove('copy-success');
                     copyBtn.innerHTML = '📋 Copia negli Appunti';
                 }, 2000);
             }).catch(err => {
-                // Fallback per browser più vecchi
                 document.execCommand('copy');
                 copyBtn.classList.add('copy-success');
                 copyBtn.innerHTML = '✓ Copiato!';
-                
                 setTimeout(() => {
                     copyBtn.classList.remove('copy-success');
                     copyBtn.innerHTML = '📋 Copia negli Appunti';
@@ -1746,7 +1753,6 @@ VALUTAZIONE INCOMPLETA: Si raccomanda esecuzione di colorazione per IgG totali s
         function editReportText() {
             const textarea = document.getElementById('reportTextarea');
             textarea.readOnly = !textarea.readOnly;
-            
             if (!textarea.readOnly) {
                 textarea.focus();
                 textarea.style.borderColor = '#4caf50';

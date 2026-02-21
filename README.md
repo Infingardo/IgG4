@@ -151,7 +151,7 @@ MIT License
 
 ## 👤 Autore
 
-**Filippo Fraggetta** — Patologo  
+**Filippo Bianchi** — Patologo  
 ASST Fatebenefratelli-Sacco, Milano
 
 GitHub: [@infingardo](https://github.com/infingardo)
