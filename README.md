@@ -46,6 +46,11 @@ Verifica degli entry criteria ACR/EULAR 2019 prima di procedere:
 - Pulsante **copia negli appunti**
 - Possibilità di **modifica** prima di copiare
 
+### Sezioni Collassabili
+- **📊 Tabella Soglie** — riferimento rapido per tutti gli organi
+- **📚 Bibliografia** — riferimenti principali e organo-specifici con link PubMed
+- **📖 About IgG4-RD** — background fisiopatologico e trappole diagnostiche
+
 ## ⚠️ Warning Implementati
 
 Il tool include diversi livelli di warning per prevenire errori diagnostici:
@@ -121,6 +126,7 @@ La diagnosi di IgG4-RD richiede sempre:
 
 ### v2.0.0 (Gennaio 2025)
 - ✨ **Genera Referto**: testo strutturato con copia negli appunti
+- 📖 **Sezione About**: background fisiopatologico per patologi
 - 🚨 Warning critico IgG4+ ≠ IgG4-RD
 - ⚠️ Warning aggressivo per linfonodo
 - 📝 Flebite obliterante sfumata (tipica vs suggestiva)
@@ -151,7 +157,7 @@ MIT License
 
 ## 👤 Autore
 
-**Filippo Bianchi** — Patologo  
+**Filippo Fraggetta** — Patologo  
 ASST Fatebenefratelli-Sacco, Milano
 
 GitHub: [@infingardo](https://github.com/infingardo)
